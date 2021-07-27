@@ -58,19 +58,26 @@ class BatchDataset:
         end = self.batch_offset
         return self._get_batch(start, end)
 
+
 class WeightedBatchDataset(BatchDataset):
     def __init__(self, images, labels=None, labels_flag=False):
-        BatchDataset.__init__(self, images=images, labels=labels, labels_flag=labels_flag)
+        BatchDataset.__init__(
+            self, images=images, labels=labels, labels_flag=labels_flag
+        )
         self.reduced_images = self.images
         self.reduced_labels = self.labels
         # Set weights to uniform sampling
-        self.weights = np.ones(self.images.shape[0], dtype=np.float) / self.images.shape[0]
+        self.weights = (
+            np.ones(self.images.shape[0], dtype=np.float) / self.images.shape[0]
+        )
 
     def set_weights(self, weights):
         if np.any(weights < 0):
             raise EnvironmentError("Sampling weights cannot be negative")
         elif weights.shape[0] != self.images.shape[0]:
-            raise EnvironmentError("Size of sampling weights is not equal to dataset size")
+            raise EnvironmentError(
+                "Size of sampling weights is not equal to dataset size"
+            )
         else:
             self.weights = weights
             self.weights /= np.sum(self.weights)
@@ -80,12 +87,15 @@ class WeightedBatchDataset(BatchDataset):
         data_percentage = 1.0 - reduction_ratio
         self.n_samples = int(data_percentage * self.images.shape[0])
         self.perm = np.arange(self.n_samples)
-        indices = np.random.choice(np.arange(self.images.shape[0]), size=self.n_samples, replace=False,
-                                   p=self.weights)
+        indices = np.random.choice(
+            np.arange(self.images.shape[0]),
+            size=self.n_samples,
+            replace=False,
+            p=self.weights,
+        )
         self.reduced_images = self.images[indices]
         if self.labels_flag:
             self.reduced_labels = self.labels[indices]
-
 
     def permute_data(self):
         np.random.shuffle(self.perm)
@@ -99,9 +109,12 @@ class WeightedBatchDataset(BatchDataset):
         else:
             return self.reduced_images[start:end], self.reduced_labels[start:end]
 
+
 class NeighborBatchDataset(BatchDataset):
     def __init__(self, images, labels, labels_flag=False):
-        BatchDataset.__init__(self, images=images, labels=labels, labels_flag=labels_flag)
+        BatchDataset.__init__(
+            self, images=images, labels=labels, labels_flag=labels_flag
+        )
         self.reconstruction_error = np.zeros(self.n_samples, dtype=np.float32)
         self.node_degree = np.zeros(self.n_samples, dtype=np.float32)
         self.node_neighbors = np.zeros(self.n_samples, dtype=np.int)
@@ -120,7 +133,6 @@ class NeighborBatchDataset(BatchDataset):
         # self.node_neighbors = self.node_neighbors[self.perm]
         pass
 
-
     def next_batch(self, batch_size):
         # list indices of selected points
         selected_points = []
@@ -130,8 +142,11 @@ class NeighborBatchDataset(BatchDataset):
                 # get index of proposed sample
                 proposed_point = np.random.choice(indices, 1)[0]
                 # remove the neighbors and proposed points from indices
-                indices = np.setdiff1d(indices, np.append(self.neighbors[proposed_point], proposed_point),
-                                       assume_unique=True)
+                indices = np.setdiff1d(
+                    indices,
+                    np.append(self.neighbors[proposed_point], proposed_point),
+                    assume_unique=True,
+                )
                 selected_points.append(proposed_point)
         else:
             selected_points = np.random.choice(indices, batch_size)

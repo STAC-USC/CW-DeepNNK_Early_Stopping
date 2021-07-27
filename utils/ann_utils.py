@@ -20,7 +20,7 @@ class FaissNeighborSearch:
             self.index = faiss.IndexIDMap2(self.index)
         self.use_gpu = use_gpu
         if self.use_gpu:
-            os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+            os.environ["CUDA_VISIBLE_DEVICES"] = "0"
             self.convert_to_gpu()
             # self.index = faiss.GpuIndexFlatL2(res, self.d, flat_config)  # Does brute force neighbor search
 
@@ -34,7 +34,7 @@ class FaissNeighborSearch:
         self.index = faiss.index_cpu_to_gpu(res, flat_config.device, self.index)
 
     def load(self, folder_name):
-        fname = os.path.join(folder_name, 'train_faiss.index')
+        fname = os.path.join(folder_name, "train_faiss.index")
         if not os.path.exists(fname):
             return False
         self.index = faiss.read_index(fname)
@@ -48,7 +48,7 @@ class FaissNeighborSearch:
             os.makedirs(folder_name)
         # with open(os.path.join(folder_name, 'train_data_comments.txt'), 'wb') as f:
         #     f.write(faiss.MatrixStats(self.index.).comments)
-        fname = os.path.join(folder_name, 'train_faiss.index')
+        fname = os.path.join(folder_name, "train_faiss.index")
         if self.use_gpu:
             index = faiss.index_gpu_to_cpu(self.index)
         else:
@@ -58,14 +58,18 @@ class FaissNeighborSearch:
     def add_to_database(self, x):
         # x = x/LA.norm(x, axis=1, keepdims=True)
         if self.add_with_ids:
-            raise SyntaxError("Missing id argument for data to be added. Use add_to_database_with_ids(...) "
-                              "function instead or set add_with_ids flag to False at initialization")
+            raise SyntaxError(
+                "Missing id argument for data to be added. Use add_to_database_with_ids(...) "
+                "function instead or set add_with_ids flag to False at initialization"
+            )
         self.index.add(x)
 
     def add_to_database_with_ids(self, x, ids):
         if not self.add_with_ids:
-            raise SyntaxError("Additional id argument for data to be added. Use add_to_database(...) "
-                              "function instead or set add_with_ids flag to True at initialization")
+            raise SyntaxError(
+                "Additional id argument for data to be added. Use add_to_database(...) "
+                "function instead or set add_with_ids flag to True at initialization"
+            )
         self.index.add_with_ids(x, ids)
 
     def search_neighbors(self, q):

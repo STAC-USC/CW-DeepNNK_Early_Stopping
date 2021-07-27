@@ -6,7 +6,9 @@ from scipy.linalg import get_lapack_funcs
 import warnings
 
 
-def non_negative_qpsolver(A, b, x_init, x_tol, check_tol=-1, epsilon_low=-1, epsilon_high=-1):
+def non_negative_qpsolver(
+    A, b, x_init, x_tol, check_tol=-1, epsilon_low=-1, epsilon_high=-1
+):
     """
     Solves (1/2)x.T A x - b.T x
     :param x_init: Initial value for solution x
@@ -41,7 +43,10 @@ def non_negative_qpsolver(A, b, x_init, x_tol, check_tol=-1, epsilon_low=-1, eps
     while (check > check_tol) and (itr < max_iter):
         x_opt_solver = np.zeros((n, 1))
         x_opt_solver[non_pruned_elements] = cholesky_solver(
-            A[non_pruned_elements[:, 0], :][:, non_pruned_elements[:, 0]], b[non_pruned_elements[:, 0]], tol=x_tol)
+            A[non_pruned_elements[:, 0], :][:, non_pruned_elements[:, 0]],
+            b[non_pruned_elements[:, 0]],
+            tol=x_tol,
+        )
         x_opt = x_opt_solver
         itr = itr + 1
         N = x_opt < epsilon_low
@@ -55,7 +60,9 @@ def non_negative_qpsolver(A, b, x_init, x_tol, check_tol=-1, epsilon_low=-1, eps
     return x_opt[:, 0], check
 
 
-def cholesky_solver(a, b, tol=1e-10, lower=False, overwrite_a=False, overwrite_b=False, clean=True):
+def cholesky_solver(
+    a, b, tol=1e-10, lower=False, overwrite_a=False, overwrite_b=False, clean=True
+):
     """Modified code from SciPy LinAlg routine"""
 
     a1 = np.atleast_2d(a)
@@ -63,15 +70,17 @@ def cholesky_solver(a, b, tol=1e-10, lower=False, overwrite_a=False, overwrite_b
     if a1.size == 0:
         return b
 
-    potrf, = get_lapack_funcs(('potrf',), (a1,))
+    (potrf,) = get_lapack_funcs(("potrf",), (a1,))
     c, info = potrf(a1, lower=lower, overwrite_a=overwrite_a, clean=clean)
 
     if info > 0:
-        warnings.warn("Cholesky solver encountered positive semi-definite matrix -- possible duplicates in data")
+        warnings.warn(
+            "Cholesky solver encountered positive semi-definite matrix -- possible duplicates in data"
+        )
         # return solve(a1, b, assume_a='sym', lower=lower, overwrite_a=overwrite_a, overwrite_b=overwrite_b,
         #              check_finite=False)
-        c = c + tol*np.eye(b.size)
+        c = c + tol * np.eye(b.size)
 
-    potrs, = get_lapack_funcs(('potrs',), (c, b))
+    (potrs,) = get_lapack_funcs(("potrs",), (c, b))
     x, info = potrs(c, b, lower=lower, overwrite_b=overwrite_b)
     return x
