@@ -23,45 +23,31 @@ flags.DEFINE_integer("seed", 0, "Random seed for reproducibility")
 # Data
 flags.DEFINE_string("dataset", "cifar10", "Choose dataset (mnist/fasion_mnist/cifar10)")
 flags.DEFINE_integer("num_classes", 2, "Num classes from chosen dataset (2 or 10)")
-flags.DEFINE_integer(
-    "labeled_samples",
-    10000,
-    "Number of labeled samples to use in train and validation set",
-)
-flags.DEFINE_float(
-    "validation_percent", 0, "Fraction of labelled data to use for validation"
-)
+flags.DEFINE_integer("labeled_samples", 10000,
+                     "Number of labeled samples to use in train and validation set")
+flags.DEFINE_float("validation_percent", 0, 
+                   "Fraction of labelled data to use for validation")
 # Hyperparameters
 flags.DEFINE_integer("epochs", 400, "Max number of epochs")
 flags.DEFINE_float("lr", 0.001, "Learning rate")
 flags.DEFINE_integer("batch_size", 50, "Batch size")
 flags.DEFINE_bool("regularize", False, "Use dropout")
 flags.DEFINE_string("optimizer", "Adam", "Optimizer (Adam/Momentum/GD)")
-flags.DEFINE_string(
-    "weight_initializer",
-    "he_uniform",
-    "Weight initialization method (glorot_uniform/glorot_normal/he_normal/he_uniform)",
-)
+flags.DEFINE_string("weight_initializer","he_uniform",
+                    "Weight initialization method (glorot_uniform/glorot_normal/he_normal/he_uniform)")
 # Early stopping
-flags.DEFINE_string(
-    "stopping", "None", "Early stopping method (cwdeepnnk/deepnnk/validation)"
-)
+flags.DEFINE_string("stopping", "None", 
+                    "Early stopping method (cwdeepnnk/deepnnk/validation)")
 flags.DEFINE_integer("criterion_freq", 1, "Compute stopping criterion every X epochs")
-flags.DEFINE_integer(
-    "patience",
-    20,
-    "Number of times to observe worsening generalization estimate before stopping",
-)
+flags.DEFINE_integer("patience", 20, 
+                     "Number of times to observe worsening generalization estimate before stopping")
 # Graph related parameters
 flags.DEFINE_integer("knn_param", 25, "Number of initial neighbors for NNK")
-flags.DEFINE_string(
-    "kernel", "cosine", "Kernel for NNK graph construction (cosine/gaussian)"
-)
+flags.DEFINE_string("kernel", "cosine", 
+                    "Kernel for NNK graph construction (cosine/gaussian)")
 flags.DEFINE_float(
-    "interpol_queries",
-    1.0,
-    "Fraction of training set samples to use as queries in the LOO procedure",
-)
+    "interpol_queries", 1.0, 
+    "Fraction of training set samples to use as queries in the LOO procedure")
 
 
 def main(arg=None):
@@ -241,7 +227,8 @@ def main(arg=None):
     saver = tf.train.Saver(max_to_keep=epochs)
 
     # Output directory
-    name_experiment = f"ConvNet_{dataset}_num_classes_{num_classes}_optim_{FLAGS.optimizer}_lr_{FLAGS.lr}_batch_size_{batch_size}_labeled_samples_{labeled_samples}_val_percent_{val_percent}_stop_{criterion}_seed_{seed_value}"
+    name_experiment = f"ConvNet_{dataset}_num_classes_{num_classes}_optim_{FLAGS.optimizer}_lr_{FLAGS.lr}_batch_size"\
+        f"_{batch_size}_labeled_samples_{labeled_samples}_val_percent_{val_percent}_stop_{criterion}_seed_{seed_value}"
     if criterion != "None":
         name_experiment += (
             f"_patience_{FLAGS.patience}_criterion_freq_{FLAGS.criterion_freq}"
