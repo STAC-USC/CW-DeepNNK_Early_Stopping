@@ -1,4 +1,4 @@
-__author__ = "davidbonet"
+__author__ = "shekkizh, davidbonet"
 
 import numpy as np
 from utils.non_neg_qpsolver import non_negative_qpsolver
@@ -10,7 +10,7 @@ def majority_vote_classifier(D, y_neighbor, y_node):
     predicted_label = np.sum(np.expand_dims(W, axis=2) * y_neighbor, axis=1)
     error = 1 - np.equal(
         np.argmax(predicted_label, axis=1), np.argmax(y_node, axis=1)
-    ).astype(np.float)
+    ).astype(float)
     return error
 
 
@@ -73,8 +73,8 @@ def nnk_loo(
     queries = activations[:interpol_queries]
     query_labels = labels[:interpol_queries]
     num_classes = labels.shape[1]
-    y_train = np.zeros((len(queries), knn_param, num_classes), dtype=np.float)
-    W = np.zeros((len(queries), knn_param), dtype=np.float)
+    y_train = np.zeros((len(queries), knn_param, num_classes), dtype=float)
+    W = np.zeros((len(queries), knn_param), dtype=float)
 
     # Initialize ANN
     d = activations.shape[1]

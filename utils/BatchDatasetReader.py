@@ -19,7 +19,7 @@ class BatchDataset:
         resize_size = #size of output image - does bilinear resize
         """
         # print("Initializing Batch Dataset Reader...")
-        self.images = images.astype(np.float32)
+        self.images = images.astype(float)
         self.labels_flag = labels_flag
         self.labels = labels
         self.batch_offset = 0
@@ -68,7 +68,7 @@ class WeightedBatchDataset(BatchDataset):
         self.reduced_labels = self.labels
         # Set weights to uniform sampling
         self.weights = (
-            np.ones(self.images.shape[0], dtype=np.float) / self.images.shape[0]
+            np.ones(self.images.shape[0], dtype=float) / self.images.shape[0]
         )
 
     def set_weights(self, weights):
@@ -115,8 +115,8 @@ class NeighborBatchDataset(BatchDataset):
         BatchDataset.__init__(
             self, images=images, labels=labels, labels_flag=labels_flag
         )
-        self.reconstruction_error = np.zeros(self.n_samples, dtype=np.float32)
-        self.node_degree = np.zeros(self.n_samples, dtype=np.float32)
+        self.reconstruction_error = np.zeros(self.n_samples, dtype=float)
+        self.node_degree = np.zeros(self.n_samples, dtype=float)
         self.node_neighbors = np.zeros(self.n_samples, dtype=np.int)
         self.neighbors = {}
 

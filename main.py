@@ -251,8 +251,8 @@ def main(arg=None):
         last_batch = dataset_size % batch_size
         if n_batches == 0:
             return 0, 0
-        loss_val = np.zeros(n_batches, dtype=np.float)
-        accuracy = np.zeros(n_batches, dtype=np.float)
+        loss_val = np.zeros(n_batches, dtype=float)
+        accuracy = np.zeros(n_batches, dtype=float)
         start_idx = 0
         for itr in range(n_batches):
             end_idx = start_idx + batch_size
@@ -297,8 +297,8 @@ def main(arg=None):
             train_dataset.reset_batch_offset()
             train_dataset.permute_data()
             n_batches = int(train_dataset.n_samples / batch_size)
-            train_loss = np.zeros(n_batches, dtype=np.float)
-            train_acc = np.zeros(n_batches, dtype=np.float)
+            train_loss = np.zeros(n_batches, dtype=float)
+            train_acc = np.zeros(n_batches, dtype=float)
             for itr in range(n_batches):
                 batch_images, batch_labels = train_dataset.next_batch(
                     batch_size=batch_size
@@ -323,6 +323,7 @@ def main(arg=None):
 
             # Stopping criterion
             if epoch % FLAGS.criterion_freq == 0:
+                ### CW-DeepNNK early stopping ###
                 if criterion == "cwdeepnnk":
                     for channel in range(0, num_channels):
                         if ch_patience[channel] > 0:
@@ -377,7 +378,8 @@ def main(arg=None):
                     if np.all(ch_patience == 0):
                         print("Breaking train loop: out of patience in all channels\n")
                         break
-
+                
+                ### DeepNNK early stopping ###
                 elif criterion == "deepnnk":
                     vector = net[3][:, :, :, :]
                     d = tf_utils.get_tensor_size(vector)
@@ -420,6 +422,7 @@ def main(arg=None):
                             file=f_csv,
                         )
 
+                ### Validation-based early stopping ###
                 elif criterion == "validation":
                     if best_val <= val_error:
                         patience -= 1
