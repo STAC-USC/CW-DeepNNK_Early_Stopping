@@ -19,12 +19,10 @@ Python source code for [Channel-Wise Early Stopping without a Validation Set via
 ## Citing this work
 
 ```
-@misc{bonet2021channelwise,
+@article{bonet2021channelwise,
       title={Channel-Wise Early Stopping without a Validation Set via NNK Polytope Interpolation}, 
-      author={David Bonet and Antonio Ortega and Javier Ruiz-Hidalgo and Sarath Shekkizhar},
+      author={Bonet, David and Ortega, Antonio and Ruiz-Hidalgo, Javier and Shekkizhar, Sarath},
+      journal={Asia-Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)}
       year={2021},
-      eprint={2107.12972},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
 }
 ```
